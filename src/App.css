@@ -13,7 +13,43 @@
   text-transform: uppercase;
   letter-spacing: 4px;
   text-shadow: 2px 2px 10px rgba(0, 255, 151, 0.3);
-  
+align-self: flex-start;
+  margin-left: 2.5%; /* grid ile hizalı görünmesi için */  
+}
+
+/* Arama Kutusu Konteynırı */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+  width: 100%;
+}
+
+/* Arama Giriş Kutusu (Input) */
+.search-input {
+  width: 350px;
+  padding: 15px 25px;
+  border-radius: 30px;
+  border: 2px solid rgba(0, 255, 151, 0.3);
+  background-color: #202329; /* Kartlardan bir ton daha koyu, derinlik katar */
+  color: #00ff97; /* Yazı rengi portal yeşili */
+  font-size: 1.1rem;
+  outline: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Zıplama efekti */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Kutuya Tıklayınca (Focus) Olacaklar */
+.search-input:focus {
+  width: 450px; /* Genişleyerek "ben buradayım" der */
+  border-color: #00ff97;
+  box-shadow: 0 0 20px rgba(0, 255, 151, 0.4);
+  background-color: #3c3e44;
+}
+
+/* Placeholder (İpucu yazısı) Rengi */
+.search-input::placeholder {
+  color: rgba(0, 255, 151, 0.5);
 }
 
 .card-grid {
