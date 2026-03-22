@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCharacters } from "./Api";
+import { getCharacters, getEpisodes } from "./Api";
 import "./App.css";
 
 function App() {
@@ -7,34 +7,62 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [searchItem, setSearchItem] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [episodes, setEpisodes] = useState([]);
+  const [activeTab, setActiveTab] = useState("characters");
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const data = await getCharacters(currentPage);
 
-      console.log("Gelen Paket:", data); //datanın resultta saklandıgını gördük
-
-      if (data && data.results) {
-        setCharacters(data.results);
+      if (activeTab === "characters") {
+        const data = await getCharacters(currentPage);
+        console.log("caharacters:", data);
+        setCharacters(data?.results || []);
       } else {
-        setCharacters([]); // Hiç sonuç yoksa ekranı temizle
+        const data = await getEpisodes(currentPage);
+        console.log("episodes:", data);
+        setEpisodes(data?.results || []);
       }
-
       setLoading(false); //
     };
 
     loadData(); // fonk napicagını anlattık simdi cagiriyoruz
-  }, [currentPage]); //ikisinden brii değiştiği an api isteği tekrar at
+  }, [currentPage, activeTab]); // useeffect ile izlenerek sayfa veya sekmeden biri değiştiği an api isteği tekrar atılacak.
 
   return (
     <div className="app-container">
       <h1 className="main-title">RickVerse</h1>
+
+      <div className="tab-container">
+        <button
+          className={activeTab === "characters" ? "active-btn" : "noactive-btn"}
+          onClick={() => {
+            setActiveTab("characters");
+            setCurrentPage(1);
+          }}
+        >
+          Characters
+        </button>
+        <button
+          className={activeTab === "episodes" ? "active-btn" : "noactive-btn"}
+          onClick={() => {
+            setActiveTab("episodes");
+            setCurrentPage(1);
+          }}
+        >
+          Episodes
+        </button>
+      </div>
+
       <div className="search-container">
         <input
           className="search-input"
           type="text"
-          placeholder="Search Caracters"
+          placeholder={
+            activeTab === "characters"
+              ? "Search characters..."
+              : "Search episodes..."
+          }
           onChange={(e) => {
             setSearchItem(e.target.value); //input kutusunun içindekini verir set ile searchıtemi artık güncelliyoruz
           }}
@@ -48,32 +76,51 @@ function App() {
       ) : (
         <>
           <div className="card-grid">
-            {characters
-              .filter((char) =>
-                char.name.toLowerCase().includes(searchItem.toLowerCase()),
-              )
+            {activeTab === "characters"
+              ? characters
+                  .filter((char) =>
+                    char.name.toLowerCase().includes(searchItem.toLowerCase()),
+                  )
 
-              .map((char) => (
-                <div key={char.id} className="character-card">
-                  <div className="image-wrapper">
-                    <img src={char.image} alt={char.name} />
-                  </div>
-                  <div className="character-details">
-                    <h3>{char.name}</h3>
-                    <div className="status-info">
-                      {/* Dinamik class kullanımı: status alive ise yeşil, dead ise kırmızı nokta */}
-                      <span
-                        className={`status-icon ${char.status.toLowerCase()}`}
-                      ></span>
-                      <span>
-                        {char.status} - {char.species}
-                      </span>
+                  .map((char) => (
+                    <div key={char.id} className="character-card">
+                      <div className="image-wrapper">
+                        <img src={char.image} alt={char.name} />
+                      </div>
+                      <div className="character-details">
+                        <h3>{char.name}</h3>
+                        <div className="status-info">
+                          {/* Dinamik class kullanımı: status alive ise yeşil, dead ise kırmızı nokta */}
+                          <span
+                            className={`status-icon ${char.status.toLowerCase()}`}
+                          ></span>
+                          <span>
+                            {char.status} - {char.species}
+                          </span>
+                        </div>
+                        <p className="location-label">
+                          Origin: {char.origin.name}
+                        </p>{" "}
+                        {/*origin string değil objedir*/}{" "}
+                      </div>
                     </div>
-                    <p className="location-label">Origin: {char.origin.name}</p>{" "}
-                    {/*origin string değil objedir*/}{" "}
-                  </div>
-                </div>
-              ))}
+                  ))
+              : // EPISODES BURADA BAŞLIYOR
+                episodes
+                  .filter((ep) =>
+                    ep.name.toLowerCase().includes(searchItem.toLowerCase()),
+                  )
+                  .map((ep) => (
+                    <div key={ep.id} className="character-card episode-card">
+                      <div className="episode-header">
+                        <h3>{ep.episode}</h3>
+                      </div>
+                      <div className="character-details episode-details">
+                        <h4>{ep.name}</h4>
+                        <p className="air-date">Air Date: {ep.air_date}</p>
+                      </div>
+                    </div>
+                  ))}
           </div>
 
           <div className="pagination">
