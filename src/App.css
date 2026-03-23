@@ -276,42 +276,60 @@ align-self: flex-start;
   z-index: 1000;           /* Her şeyin en üstünde durmasını sağlar */
 }
 
-/* Ortadaki beyaz/gri kutu (Pencere) */
+/* Modal İçerik Kutusu - Yan Yana Dizilim */
 .modal-content {
-  background-color: #272b33; /* Rick and Morty koyu gri teması */
-  color: white;
-  padding: 30px;
+  position: relative; /* Çarpının sağ üstte durması için şart */
+  display: flex; /* İçindekileri (resim ve bilgiler) yan yana dizer */
+  flex-direction: row; /* Satır dizilimi */
+  gap: 30px; /* Resim ve yazı arasındaki boşluk */
+  background-color: #1e2129;
+  padding: 40px;
   border-radius: 15px;
-  border: 2px solid #97ce4c; /* Portal yeşili çerçeve */
-  max-width: 500px;
+  max-width: 800px; /* Yan yana sığmaları için genişliği artırdık */
   width: 90%;
-  position: relative; /* Kapatma butonunu konumlandırmak için */
-  box-shadow: 0 0 20px rgba(151, 206, 76, 0.4); /* Hafif yeşil parlama */
+  border: 1px solid #00ff9d;
+  color: white;
 }
 
-/* Kapatma Butonu (X) */
-.close-btn {
+/* Çarpı Butonu - Sağ Üstte Çivili */
+.modal-content > button {
   position: absolute;
   top: 15px;
   right: 20px;
-  background: none;
+  background: transparent;
   border: none;
-  color: #97ce4c;
+  color: #00ff9d;
   font-size: 24px;
   font-weight: bold;
   cursor: pointer;
+  z-index: 10;
 }
 
-.close-btn:hover {
-  color: #ff4444; /* Üstüne gelince kırmızı olsun */
+/* Resim Ayarı */
+.modal-content img {
+  width: 250px; /* Resmin boyutu */
+  height: 250px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #00ff9d;
 }
 
-/* Bölüm listesinin çok uzamaması için */
-.episode-list-container ul {
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 10px;
-  background: rgba(0,0,0,0.2);
-  border-radius: 8px;
-  list-style: none;
+/* Sağ Taraftaki Bilgiler */
+.modal-details {
+  display: flex;
+  flex-direction: column; /* Bilgileri kendi içinde alt alta dizer */
+  text-align: left; /* Yazıları sola yaslar */
+  flex: 1; /* Kalan boşluğu kaplar */
+}
+
+.modal-details h1 {
+  margin-top: 0;
+  color: #00ff9d;
+}
+
+/* Bölüm Listesi İçin */
+.episode-list-container {
+  margin-top: 15px;
+  max-height: 150px; /* Çok uzayıp modalı bozmasın diye */
+  overflow-y: auto; /* Uzarsa içinde kaydırılsın */
 }

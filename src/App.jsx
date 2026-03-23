@@ -173,35 +173,33 @@ function App() {
             {" "}
             {/* stopPropagation kaldırıldı */}
             <button onClick={() => setSelectedCharacter(null)}>X</button>
+            <img src={selectedCharacter.image} alt={selectedCharacter.name} />
             <div className="modal-details">
-              <img
-                src={selectedCharacter.image}
-                alt={selectedCharacter.name}
-                width="100"
-              />
-              <h2>{selectedCharacter.name}</h2>
+              <h1>{selectedCharacter.name}</h1>
 
-              <p>
-                <strong>Status:</strong>
+              <h3>
+                <strong>Status: </strong>
                 {selectedCharacter.status}
-              </p>
-              <p>
-                <strong>Species:</strong> {selectedCharacter.species}
-              </p>
-              <p>
-                <strong>Gender:</strong> {selectedCharacter.gender}
-              </p>
-              <p>
-                <strong>Origin:</strong> {selectedCharacter.origin.name}
-              </p>
-              <p>
-                <strong>Last Location:</strong>{" "}
+              </h3>
+              <h3>
+                <strong>Species: </strong> {selectedCharacter.species}
+              </h3>
+              <h3>
+                <strong>Gender: </strong> {selectedCharacter.gender}
+              </h3>
+              <h3>
+                <strong>Origin: </strong> {selectedCharacter.origin.name}
+              </h3>
+              <h3>
+                <strong>Last Location: </strong>
                 {selectedCharacter.location.name}
-              </p>
-              <p> {selectedCharacter.episode}</p>
+              </h3>
+
+              <h3>
+                <strong>Played Episodes: </strong>
+              </h3>
 
               <div className="episode-list-container">
-                <strong>Played Episodes:</strong>
                 <ul>
                   {selectedCharacter.episode.map((epUrl, index) => (
                     <li key={index}>Episode {epUrl.split("/").pop()}</li>

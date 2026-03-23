@@ -24,3 +24,4 @@ export const getEpisodes = async (page = 1) => {
     return null;
   }
 };
+  
