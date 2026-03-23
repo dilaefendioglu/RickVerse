@@ -20,8 +20,19 @@ export const getEpisodes = async (page = 1) => {
     });
     return data;
   } catch (error) {
-    console.error("Bölüm Yükleme Hatası:", error);
+    console.error("Bölüm Api Hatası:", error);
     return null;
   }
 };
-  
+
+export const getLocation = async (page = 1) => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/location`, {
+      params: { page },
+    });
+    return data;
+  } catch (error) {
+    console.error("Location api hatası", error);
+    return null;
+  }
+};
