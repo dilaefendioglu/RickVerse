@@ -9,6 +9,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [episodes, setEpisodes] = useState([]);
   const [activeTab, setActiveTab] = useState("characters");
+  const [detailCharacter, setDetailCharacter] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -103,6 +104,11 @@ function App() {
                         </p>{" "}
                         {/*origin string değil objedir*/}{" "}
                       </div>
+                      <div
+                        key={char.id}
+                        className="detaail-card"
+                        onClick={() => setDetailCharacter(char)}
+                      ></div>
                     </div>
                   ))
               : // EPISODES BURADA BAŞLIYOR
@@ -143,6 +149,15 @@ function App() {
           </div>
         </>
       )}
+
+
+
+
+
+
+
+
+      
     </div>
   );
 }
