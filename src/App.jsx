@@ -30,7 +30,16 @@ function App() {
     loadData(); // fonk napicagını anlattık simdi cagiriyoruz
   }, [currentPage, activeTab]); // useeffect ile izlenerek sayfa veya sekmeden biri değiştiği an api isteği tekrar atılacak.
 
- 
+  useEffect(() => {
+    if (selectedCharacter) {
+      document.body.style.overflow = "hidden"; //overflow = scroll
+    } else {
+      document.body.style.overflow = "unset"; //sifirla
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedCharacter]);
 
   return (
     <div className="app-container">
