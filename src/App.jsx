@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { getCharacters, getEpisodes, getLocations } from "./Api";
 import "./App.css";
+import CharacterCard from "./components/CharacterCard";
+import EpisodeCard from "./components/EpisodeCard";
+import LocationCard from "./components/LocationCard";
+import CharacterModal from "./components/CharacterModal";
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -53,63 +57,24 @@ function App() {
           char.name.toLowerCase().includes(searchItem.toLowerCase()),
         )
         .map((char) => (
-          <div
+          <CharacterCard
             key={char.id}
-            onClick={() => setSelectedCharacter(char)}
-            className="character-card"
-            style={{ cursor: "pointer" }}
-          >
-            <div className="image-wrapper">
-              <img src={char.image} alt={char.name} />
-            </div>
-            <div className="character-details">
-              <h3>{char.name}</h3>
-              <div className="status-info">
-                <span
-                  className={`status-icon ${char.status.toLowerCase()}`}
-                ></span>
-                <span>
-                  {char.status} - {char.species}
-                </span>
-              </div>
-              <p className="location-label">Origin: {char.origin.name}</p>
-            </div>
-          </div>
+            char={char}
+            onSelect={setSelectedCharacter}
+          />
         ));
     } else if (activeTab === "episodes") {
       return episodes
         .filter((ep) =>
           ep.name.toLowerCase().includes(searchItem.toLowerCase()),
         )
-        .map((ep) => (
-          <div key={ep.id} className="character-card episode-card">
-            <div className="episode-header">
-              <h3>{ep.episode}</h3>
-            </div>
-            <div className="character-details episode-details">
-              <h4>{ep.name}</h4>
-              <p className="air-date">Air Date: {ep.air_date}</p>
-            </div>
-          </div>
-        ));
+        .map((ep) => <EpisodeCard key={ep.id} ep={ep} />);
     } else if (activeTab === "locations") {
       return locations
         .filter((loc) =>
           loc.name.toLowerCase().includes(searchItem.toLowerCase()),
         )
-        .map((loc) => (
-          <div key={loc.id} className="character-card location-card">
-            <div className="location-header">
-              <span className="location-type-badge">{loc.type}</span>
-              <h3>{loc.name}</h3>
-            </div>
-            <div className="character-details">
-              <p className="dimension-text">
-                <strong>Dimension:</strong> {loc.dimension}
-              </p>
-            </div>
-          </div>
-        ));
+        .map((loc) => <LocationCard key={loc.id} loc={loc} />);
     }
   };
 
@@ -187,52 +152,12 @@ function App() {
         </>
       )}
 
-      {selectedCharacter && (
-        <div
-          className="modal-overlay"
-          onClick={() => setSelectedCharacter(null)}
-        >
-          {/* kutuya tıkladığında kapanması engellenir */}
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setSelectedCharacter(null)}>X</button>
-            <img src={selectedCharacter.image} alt={selectedCharacter.name} />
-            <div className="modal-details">
-              <h1>{selectedCharacter.name}</h1>
-
-              <h3>
-                <strong>Status: </strong>
-                {selectedCharacter.status}
-              </h3>
-              <h3>
-                <strong>Species: </strong> {selectedCharacter.species}
-              </h3>
-              <h3>
-                <strong>Gender: </strong> {selectedCharacter.gender}
-              </h3>
-              <h3>
-                <strong>Origin: </strong> {selectedCharacter.origin.name}
-              </h3>
-              <h3>
-                <strong>Last Location: </strong>
-                {selectedCharacter.location.name}
-              </h3>
-
-              <h3>
-                <strong>Played Episodes: </strong>
-              </h3>
-
-              <div className="episode-list-container">
-                <ul>
-                  {selectedCharacter.episode.map((epUrl, index) => (
-                    <li key={index}>Episode {epUrl.split("/").pop()}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <CharacterModal
+        character={selectedCharacter}
+        onClose={() => setSelectedCharacter(null)}
+      />
     </div>
   );
 }
+
 export default App;
