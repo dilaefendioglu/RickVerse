@@ -262,3 +262,56 @@ align-self: flex-start;
   color: #00ff97;
   margin: 5px 0;
 }
+/* Modalın arka planını karartan perde */
+.modal-overlay {
+  position: fixed; /* Sayfayı kaydırsan da ekranda sabit kalır */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* Arkayı %85 siyah yapar */
+  display: flex;
+  justify-content: center; /* Yatayda ortalar */
+  align-items: center;     /* Dikeyde ortalar */
+  z-index: 1000;           /* Her şeyin en üstünde durmasını sağlar */
+}
+
+/* Ortadaki beyaz/gri kutu (Pencere) */
+.modal-content {
+  background-color: #272b33; /* Rick and Morty koyu gri teması */
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  border: 2px solid #97ce4c; /* Portal yeşili çerçeve */
+  max-width: 500px;
+  width: 90%;
+  position: relative; /* Kapatma butonunu konumlandırmak için */
+  box-shadow: 0 0 20px rgba(151, 206, 76, 0.4); /* Hafif yeşil parlama */
+}
+
+/* Kapatma Butonu (X) */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #97ce4c;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #ff4444; /* Üstüne gelince kırmızı olsun */
+}
+
+/* Bölüm listesinin çok uzamaması için */
+.episode-list-container ul {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  list-style: none;
+}

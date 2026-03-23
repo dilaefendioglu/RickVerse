@@ -9,7 +9,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [episodes, setEpisodes] = useState([]);
   const [activeTab, setActiveTab] = useState("characters");
-  const [detailCharacter, setDetailCharacter] = useState(null);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -29,6 +29,8 @@ function App() {
 
     loadData(); // fonk napicagını anlattık simdi cagiriyoruz
   }, [currentPage, activeTab]); // useeffect ile izlenerek sayfa veya sekmeden biri değiştiği an api isteği tekrar atılacak.
+
+ 
 
   return (
     <div className="app-container">
@@ -84,31 +86,35 @@ function App() {
                   )
 
                   .map((char) => (
-                    <div key={char.id} className="character-card">
-                      <div className="image-wrapper">
-                        <img src={char.image} alt={char.name} />
-                      </div>
-                      <div className="character-details">
-                        <h3>{char.name}</h3>
-                        <div className="status-info">
-                          {/* Dinamik class kullanımı: status alive ise yeşil, dead ise kırmızı nokta */}
-                          <span
-                            className={`status-icon ${char.status.toLowerCase()}`}
-                          ></span>
-                          <span>
-                            {char.status} - {char.species}
-                          </span>
+                    <div
+                      key={char.id}
+                      onClick={() => {
+                        console.log("Karakter seçildi:", char.name); // Çalıştığını konsoldan gör diye
+                        setSelectedCharacter(char);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <div key={char.id} className="character-card">
+                        <div className="image-wrapper">
+                          <img src={char.image} alt={char.name} />
                         </div>
-                        <p className="location-label">
-                          Origin: {char.origin.name}
-                        </p>{" "}
-                        {/*origin string değil objedir*/}{" "}
+                        <div className="character-details">
+                          <h3>{char.name}</h3>
+                          <div className="status-info">
+                            {/* Dinamik class kullanımı: status alive ise yeşil, dead ise kırmızı nokta */}
+                            <span
+                              className={`status-icon ${char.status.toLowerCase()}`}
+                            ></span>
+                            <span>
+                              {char.status} - {char.species}
+                            </span>
+                          </div>
+                          <p className="location-label">
+                            Origin: {char.origin.name}
+                          </p>{" "}
+                          {/*origin string değil objedir*/}{" "}
+                        </div>
                       </div>
-                      <div
-                        key={char.id}
-                        className="detaail-card"
-                        onClick={() => setDetailCharacter(char)}
-                      ></div>
                     </div>
                   ))
               : // EPISODES BURADA BAŞLIYOR
@@ -150,16 +156,54 @@ function App() {
         </>
       )}
 
+      {selectedCharacter && (
+        <div className="modal-overlay">
+          {" "}
+          {/* onClick kaldırıldı */}
+          <div className="modal-content">
+            {" "}
+            {/* stopPropagation kaldırıldı */}
+            <button onClick={() => setSelectedCharacter(null)}>X</button>
+            <div className="modal-details">
+              <img
+                src={selectedCharacter.image}
+                alt={selectedCharacter.name}
+                width="100"
+              />
+              <h2>{selectedCharacter.name}</h2>
 
+              <p>
+                <strong>Status:</strong>
+                {selectedCharacter.status}
+              </p>
+              <p>
+                <strong>Species:</strong> {selectedCharacter.species}
+              </p>
+              <p>
+                <strong>Gender:</strong> {selectedCharacter.gender}
+              </p>
+              <p>
+                <strong>Origin:</strong> {selectedCharacter.origin.name}
+              </p>
+              <p>
+                <strong>Last Location:</strong>{" "}
+                {selectedCharacter.location.name}
+              </p>
+              <p> {selectedCharacter.episode}</p>
 
-
-
-
-
-
-      
+              <div className="episode-list-container">
+                <strong>Played Episodes:</strong>
+                <ul>
+                  {selectedCharacter.episode.map((epUrl, index) => (
+                    <li key={index}>Episode {epUrl.split("/").pop()}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
 export default App;
