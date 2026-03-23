@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCharacters, getEpisodes } from "./Api";
+import { getCharacters, getEpisodes, getLocations } from "./Api";
 import "./App.css";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   const [episodes, setEpisodes] = useState([]);
   const [activeTab, setActiveTab] = useState("characters");
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -19,10 +20,14 @@ function App() {
         const data = await getCharacters(currentPage);
         console.log("caharacters:", data);
         setCharacters(data?.results || []);
-      } else {
+      } else if (activeTab === "episodes") {
         const data = await getEpisodes(currentPage);
         console.log("episodes:", data);
         setEpisodes(data?.results || []);
+      } else {
+        const data = await getLocations(currentPage);
+        console.log("locations:", data);
+        setLocations(data?.results || []);
       }
       setLoading(false); //
     };
@@ -40,6 +45,73 @@ function App() {
       document.body.style.overflow = "unset";
     };
   }, [selectedCharacter]);
+
+  const renderSelectedTab = () => {
+    if (activeTab === "characters") {
+      return characters
+        .filter((char) =>
+          char.name.toLowerCase().includes(searchItem.toLowerCase()),
+        )
+        .map((char) => (
+          <div
+            key={char.id}
+            onClick={() => setSelectedCharacter(char)}
+            className="character-card"
+            style={{ cursor: "pointer" }}
+          >
+            <div className="image-wrapper">
+              <img src={char.image} alt={char.name} />
+            </div>
+            <div className="character-details">
+              <h3>{char.name}</h3>
+              <div className="status-info">
+                <span
+                  className={`status-icon ${char.status.toLowerCase()}`}
+                ></span>
+                <span>
+                  {char.status} - {char.species}
+                </span>
+              </div>
+              <p className="location-label">Origin: {char.origin.name}</p>
+            </div>
+          </div>
+        ));
+    } else if (activeTab === "episodes") {
+      return episodes
+        .filter((ep) =>
+          ep.name.toLowerCase().includes(searchItem.toLowerCase()),
+        )
+        .map((ep) => (
+          <div key={ep.id} className="character-card episode-card">
+            <div className="episode-header">
+              <h3>{ep.episode}</h3>
+            </div>
+            <div className="character-details episode-details">
+              <h4>{ep.name}</h4>
+              <p className="air-date">Air Date: {ep.air_date}</p>
+            </div>
+          </div>
+        ));
+    } else if (activeTab === "locations") {
+      return locations
+        .filter((loc) =>
+          loc.name.toLowerCase().includes(searchItem.toLowerCase()),
+        )
+        .map((loc) => (
+          <div key={loc.id} className="character-card location-card">
+            <div className="location-header">
+              <span className="location-type-badge">{loc.type}</span>
+              <h3>{loc.name}</h3>
+            </div>
+            <div className="character-details">
+              <p className="dimension-text">
+                <strong>Dimension:</strong> {loc.dimension}
+              </p>
+            </div>
+          </div>
+        ));
+    }
+  };
 
   return (
     <div className="app-container">
@@ -64,17 +136,22 @@ function App() {
         >
           Episodes
         </button>
+        <button
+          className={activeTab === "locations" ? "active-btn" : "noactive-btn"}
+          onClick={() => {
+            setActiveTab("locations");
+            setCurrentPage(1);
+          }}
+        >
+          Locations
+        </button>
       </div>
 
       <div className="search-container">
         <input
           className="search-input"
           type="text"
-          placeholder={
-            activeTab === "characters"
-              ? "Search characters..."
-              : "Search episodes..."
-          }
+          placeholder={`Search ${activeTab}...`}
           onChange={(e) => {
             setSearchItem(e.target.value); //input kutusunun içindekini verir set ile searchıtemi artık güncelliyoruz
           }}
@@ -87,62 +164,7 @@ function App() {
         </div>
       ) : (
         <>
-          <div className="card-grid">
-            {activeTab === "characters"
-              ? characters
-                  .filter((char) =>
-                    char.name.toLowerCase().includes(searchItem.toLowerCase()),
-                  )
-
-                  .map((char) => (
-                    <div
-                      key={char.id}
-                      onClick={() => {
-                        console.log("Karakter seçildi:", char.name); // Çalıştığını konsoldan gör diye
-                        setSelectedCharacter(char);
-                      }}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <div key={char.id} className="character-card">
-                        <div className="image-wrapper">
-                          <img src={char.image} alt={char.name} />
-                        </div>
-                        <div className="character-details">
-                          <h3>{char.name}</h3>
-                          <div className="status-info">
-                            {/* Dinamik class kullanımı: status alive ise yeşil, dead ise kırmızı nokta */}
-                            <span
-                              className={`status-icon ${char.status.toLowerCase()}`}
-                            ></span>
-                            <span>
-                              {char.status} - {char.species}
-                            </span>
-                          </div>
-                          <p className="location-label">
-                            Origin: {char.origin.name}
-                          </p>{" "}
-                          {/*origin string değil objedir*/}{" "}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-              : // EPISODES BURADA BAŞLIYOR
-                episodes
-                  .filter((ep) =>
-                    ep.name.toLowerCase().includes(searchItem.toLowerCase()),
-                  )
-                  .map((ep) => (
-                    <div key={ep.id} className="character-card episode-card">
-                      <div className="episode-header">
-                        <h3>{ep.episode}</h3>
-                      </div>
-                      <div className="character-details episode-details">
-                        <h4>{ep.name}</h4>
-                        <p className="air-date">Air Date: {ep.air_date}</p>
-                      </div>
-                    </div>
-                  ))}
-          </div>
+          <div className="card-grid">{renderSelectedTab()}</div>
 
           <div className="pagination">
             <button
@@ -166,12 +188,12 @@ function App() {
       )}
 
       {selectedCharacter && (
-        <div className="modal-overlay">
-          {" "}
-          {/* onClick kaldırıldı */}
-          <div className="modal-content">
-            {" "}
-            {/* stopPropagation kaldırıldı */}
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedCharacter(null)}
+        >
+          {/* kutuya tıkladığında kapanması engellenir */}
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setSelectedCharacter(null)}>X</button>
             <img src={selectedCharacter.image} alt={selectedCharacter.name} />
             <div className="modal-details">

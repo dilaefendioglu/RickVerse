@@ -25,7 +25,7 @@ export const getEpisodes = async (page = 1) => {
   }
 };
 
-export const getLocation = async (page = 1) => {
+export const getLocations = async (page = 1) => {
   try {
     const { data } = await axios.get(`${BASE_URL}/location`, {
       params: { page },
